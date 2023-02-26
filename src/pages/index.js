@@ -4,13 +4,16 @@ import Modal from "@/comps/modal";
 import { getAllChannels, getChannelById } from "@/database";
 import { useEffect, useState } from "react";
 
-export default function Home(props) {
+export default function Home({allChannels, channelbyID}) {
 
+  const [newChannel, setNewChannels] = useState(allChannels)
   const [channel, setChannel] = useState({})
   const [modal, setModal] = useState(false)
+
+
   useEffect(() => {
-    setChannel(props.channelbyID)
-  }, [props.channelbyID])
+    setChannel(channelbyID)
+  }, [channelbyID])
 
   return (
     <>
@@ -24,11 +27,14 @@ export default function Home(props) {
           onSend={() => {
             setModal(false)
           }}
+          data={(data) => {
+            setNewChannels([...newChannel, data])
+          }}
         />
       }
       <div className='h-screen grid bg-pink-400 grid-cols-[minmax(0,240px)_2fr] grid-rows-[1fr]'>
         <Channel 
-          channels={props.allChannels}
+          channels={newChannel}
           onClick={() => {
             setModal(true)
           }}

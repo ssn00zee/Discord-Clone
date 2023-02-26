@@ -3,20 +3,22 @@ import axios from "axios"
 
 export default function Modal({
   onClick = () => {},
-  onSend = () => {}
+  onSend = () => {},
+  data,
 }) {
 
-  const [input, setInput] = useState()
+  const [input, setInput] = useState('')
 
     
   const newChannel = async (input) => {
     
     console.log('click')
     try {
-      await axios.post('/api/channels', {
+      const res = await axios.post('/api/channels', {
         name: input
       })
-
+      data(res.data)
+      setInput('')
     } catch (e) {
       console.log(e)
     }
@@ -45,6 +47,7 @@ export default function Modal({
             }}
             type='text'
             className='text-black'
+            value={input}
           />
           <button
             className="border border-white rounded-sm py-1 px-1"
