@@ -1,30 +1,57 @@
-import { useEffect, useState } from 'react'
-import styles from '@/styles/Home.module.css'
+import Channel from "@/comps/channel";
+import Chat from "@/comps/chat";
+import Modal from "@/comps/modal";
+import { getAllChannels, getChannelById } from "@/database";
+import { useEffect, useState } from "react";
 
+export default function Home(props) {
 
-export default function Home() {
-
-
-  const [color, setColor] = useState('bg-pink-400')
-  const [toggle, setToggle] = useState(false)
-  
-  const handleColor = () => {
-    toggle == true ? setColor('bg-blue-400') : setColor('bg-pink-400')
-    setToggle(!toggle)
-  }
+  const [channel, setChannel] = useState({})
+  const [modal, setModal] = useState(false)
+  useEffect(() => {
+    setChannel(props.channelbyID)
+  }, [props.channelbyID])
 
   return (
     <>
-      <div className={`h-screen flex ${color} justify-center items-center flex-col gap-10`}>
-        <h1 className='text-3xl font-bold underline text-slate-50 font-mono' >
-          Hello World</h1>
-          <button className='rounded h-12 w-18 min-w-min min-h-min bg-gray-600 text-red-300 inline-flex items-center p-4'
-            onClick={() => {
-               handleColor()
-            }}
-          >
-            Click Me</button>
+    <main>
+      {
+        modal && 
+        <Modal 
+          onClick={() => {
+            setModal(false)
+          }}
+          onSend={() => {
+            setModal(false)
+          }}
+        />
+      }
+      <div className='h-screen grid bg-pink-400 grid-cols-[minmax(0,240px)_2fr] grid-rows-[1fr]'>
+        <Channel 
+          channels={props.allChannels}
+          onClick={() => {
+            setModal(true)
+          }}
+        />
+        <Chat 
+          channel={channel}
+        />
       </div>
+    </main>
     </>
   )
+}
+
+
+export async function getServerSideProps(context) {
+
+  const channels = await getAllChannels()
+  const channelbyID = await getChannelById(context.query.channel) || '1'
+
+  return {
+    props: {
+      allChannels: JSON.parse(JSON.stringify(channels)),
+      channelbyID: JSON.parse(JSON.stringify(channelbyID))
+    }
+  }
 }
