@@ -1,19 +1,22 @@
 import Channel from "@/comps/channel";
 import Chat from "@/comps/chat";
 import Modal from "@/comps/modal";
-import { getAllChannels, getChannelById } from "@/database";
+import { getAllChannels, getChannelById, getAllMessages } from "@/database";
 import { useEffect, useState } from "react";
 
-export default function Home({allChannels, channelbyID}) {
+export default function Home({allChannels, channelbyID, allMessages}) {
 
   const [newChannel, setNewChannels] = useState(allChannels)
-  const [channel, setChannel] = useState({})
+  const [channel, setChannel] = useState(channelbyID)
+  const [messages, setMessages] = useState(allMessages)
   const [modal, setModal] = useState(false)
 
 
   useEffect(() => {
     setChannel(channelbyID)
-  }, [channelbyID])
+    setMessages(allMessages)
+    console.log(channel)
+  }, [channelbyID, allMessages])
 
   return (
     <>
@@ -40,6 +43,8 @@ export default function Home({allChannels, channelbyID}) {
           }}
         />
         <Chat 
+          messages={messages}
+          messageData={(messageData) => setMessages([...messages, messageData])}
           channel={channel}
         />
       </div>
@@ -53,11 +58,13 @@ export async function getServerSideProps(context) {
 
   const channels = await getAllChannels()
   const channelbyID = await getChannelById(context.query.channel) || '1'
+  const allMessages = await getAllMessages(context.query.channel) 
 
   return {
     props: {
       allChannels: JSON.parse(JSON.stringify(channels)),
-      channelbyID: JSON.parse(JSON.stringify(channelbyID))
+      channelbyID: JSON.parse(JSON.stringify(channelbyID)),
+      allMessages: JSON.parse(JSON.stringify(allMessages))
     }
   }
 }

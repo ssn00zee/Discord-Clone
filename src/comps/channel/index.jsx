@@ -15,7 +15,7 @@ export default function Channel({
       myChannel.current.scrollTo({
         top: myChannel.current.scrollHeight,
         behavior: 'smooth',
-      });
+      })
     }
   },[channels])
 
