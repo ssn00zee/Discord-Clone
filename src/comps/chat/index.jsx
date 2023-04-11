@@ -60,7 +60,7 @@ export default function Chat({
             month: 'long',
             day: 'numeric',
             hour: 'numeric',
-            // timeZone: "America/Los_Angeles", 
+            timeZone: "America/Los_Angeles", 
             hour12: true
           }
 
@@ -69,7 +69,7 @@ export default function Chat({
           return (
             <div key={message.id}>
               <p>Message: {message.text}</p>
-              {/* <p>{formattedDate}</p> */}
+              <p>{formattedDate}</p>
               <p>Username: {message.userName}</p>
             </div>
           )
